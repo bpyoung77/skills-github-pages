@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AWS MLS-C01 Practice Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .question { margin-bottom: 20px; }
+    .options button { display: block; margin: 5px 0; padding: 8px; width: 100%; text-align: left; }
+    .correct { background-color: #c8e6c9; }
+    .incorrect { background-color: #ffcdd2; }
+    .result { margin-top: 20px; font-weight: bold; font-size: 18px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1>AWS MLS-C01 Interactive Practice Quiz</h1>
+  <div id="quiz"></div>
+  <div class="result hidden" id="result"></div>
+  <script>
+    const questions = [
+      ...Array.from({ length: 100 }, (_, i) => {
+        const questionNum = i + 1;
+        const correctIndex = Math.floor(Math.random() * 4);
+        return {
+          question: `Q${questionNum}: What is the purpose of item ${questionNum} in AWS Machine Learning workflow?`,
+          options: [
+            `Option A for Q${questionNum}`,
+            `Option B for Q${questionNum}`,
+            `Option C for Q${questionNum}`,
+            `Option D for Q${questionNum}`
+          ],
+          answer: correctIndex
+        };
+      })
+    ];
+
+    let current = 0, score = 0;
+
+    function showQuestion() {
+      if (current >= questions.length) {
+        document.getElementById('quiz').innerHTML = '';
+        const result = document.getElementById('result');
+        result.classList.remove('hidden');
+        result.innerText = `Quiz Complete! Your score: ${score} / ${questions.length}`;
+        return;
+      }
+      const q = questions[current];
+      const quiz = document.getElementById('quiz');
+      quiz.innerHTML = `<div class="question"><strong>Q${current + 1}:</strong> ${q.question}</div>`;
+      const optionsDiv = document.createElement('div');
+      optionsDiv.className = 'options';
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement('button');
+        btn.innerText = opt;
+        btn.onclick = () => handleAnswer(index);
+        optionsDiv.appendChild(btn);
+      });
+      quiz.appendChild(optionsDiv);
+    }
+
+    function handleAnswer(selected) {
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === questions[current].answer) btn.classList.add('correct');
+        else if (idx === selected) btn.classList.add('incorrect');
+      });
+      if (selected === questions[current].answer) score++;
+      setTimeout(() => {
+        current++;
+        showQuestion();
+      }, 1000);
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
